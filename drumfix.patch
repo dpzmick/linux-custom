@@ -1,0 +1,47 @@
+diff --git a/drivers/usb/core/config.c b/drivers/usb/core/config.c
+index b199eb65f378..160ed252bbdb 100644
+--- a/drivers/usb/core/config.c
++++ b/drivers/usb/core/config.c
+@@ -224,30 +224,6 @@ static bool endpoint_is_duplicate(struct usb_endpoint_descriptor *e1,
+ static bool config_endpoint_is_duplicate(struct usb_host_config *config,
+ 		int inum, int asnum, struct usb_endpoint_descriptor *d)
+ {
+-	struct usb_endpoint_descriptor *epd;
+-	struct usb_interface_cache *intfc;
+-	struct usb_host_interface *alt;
+-	int i, j, k;
+-
+-	for (i = 0; i < config->desc.bNumInterfaces; ++i) {
+-		intfc = config->intf_cache[i];
+-
+-		for (j = 0; j < intfc->num_altsetting; ++j) {
+-			alt = &intfc->altsetting[j];
+-
+-			if (alt->desc.bInterfaceNumber == inum &&
+-					alt->desc.bAlternateSetting != asnum)
+-				continue;
+-
+-			for (k = 0; k < alt->desc.bNumEndpoints; ++k) {
+-				epd = &alt->endpoint[k].desc;
+-
+-				if (endpoint_is_duplicate(epd, d))
+-					return true;
+-			}
+-		}
+-	}
+-
+ 	return false;
+ }
+ 
+diff --git a/sound/usb/implicit.c b/sound/usb/implicit.c
+index 11a85e66aa96..7f4989c0d2cf 100644
+--- a/sound/usb/implicit.c
++++ b/sound/usb/implicit.c
+@@ -61,6 +61,7 @@ static const struct snd_usb_implicit_fb_match playback_implicit_fb_quirks[] = {
+ 	IMPLICIT_FB_FIXED_DEV(0x1686, 0xf029, 0x82, 2), /* Zoom UAC-2 */
+ 	IMPLICIT_FB_FIXED_DEV(0x2466, 0x8003, 0x86, 2), /* Fractal Audio Axe-Fx II */
+ 	IMPLICIT_FB_FIXED_DEV(0x0499, 0x172a, 0x86, 2), /* Yamaha MODX */
++  IMPLICIT_FB_FIXED_DEV(0x07fd, 0x0005, 0x87, 5), /* MOTU AVB (without midi version)*/
+ 
+ 	/* Special matching */
+ 	{ .id = USB_ID(0x07fd, 0x0004), .iface_class = USB_CLASS_AUDIO,
